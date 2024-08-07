@@ -1,6 +1,8 @@
 package fr.d0gma.infinite.structure;
 
 import fr.d0gma.core.world.schematic.Schematic;
+import fr.d0gma.core.world.schematic.SchematicService;
+import fr.d0gma.infinite.InfiniteJump;
 import fr.d0gma.infinite.parkour.Parkour;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
@@ -14,7 +16,7 @@ public class SchematicStructure implements Structure {
     private final Vector endOffset;
 
     public SchematicStructure(String schematicName, Vector startOffset, Vector endOffset) {
-        schematic = null; //TODO load Schematic
+        schematic = SchematicService.loadSchematic(schematicName, InfiniteJump.getInstance()).orElseThrow();
         this.startOffset = startOffset;
         this.endOffset = endOffset;
     }

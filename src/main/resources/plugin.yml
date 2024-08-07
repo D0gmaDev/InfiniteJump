@@ -1,0 +1,9 @@
+name: InfiniteJump
+author: D0gma_
+version: 0.1-SNAPSHOT
+api-version: 1.20
+main: fr.d0gma.infinite.InfiniteJump
+commands:
+  parkour:
+  leave:
+  seed:

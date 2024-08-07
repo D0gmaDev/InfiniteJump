@@ -1,0 +1,45 @@
+package fr.d0gma.infinite.command;
+
+import fr.d0gma.infinite.parkour.MapSeed;
+import fr.d0gma.infinite.parkour.ParkourInventory;
+import fr.d0gma.infinite.players.JumpPlayer;
+import fr.d0gma.infinite.players.JumpPlayerService;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import static fr.d0gma.core.translation.TranslationService.translate;
+
+public class ParkourCommand implements CommandExecutor {
+
+    private final JumpPlayerService jumpPlayerService;
+
+    public ParkourCommand(JumpPlayerService jumpPlayerService) {
+        this.jumpPlayerService = jumpPlayerService;
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!label.equalsIgnoreCase("parkour") || !(commandSender instanceof Player sender)) {
+            return false;
+        }
+
+        JumpPlayer player = jumpPlayerService.getPlayer(sender);
+
+        if (player == null) {
+            return false;
+        }
+
+        if (player.getParkour().isPresent()) {
+            player.sendMessage(translate("parkour.message.already_in_parkour"));
+            return true;
+        }
+
+        Long seed = args.length != 0 && args[0].matches("-?\\d*") ? Long.parseLong(args[0]) : null;
+
+        ParkourInventory.open(player, MapSeed.of(seed));
+        return true;
+    }
+}
