@@ -11,7 +11,6 @@ import fr.d0gma.infinite.game.Lobby;
 import fr.d0gma.infinite.listeners.JumpListeners;
 import fr.d0gma.infinite.listeners.PlayerListeners;
 import fr.d0gma.infinite.players.JumpPlayerService;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.NamespacedKey;
@@ -31,6 +30,14 @@ public class InfiniteJump extends JavaPlugin {
 
     private int position;
 
+    public static InfiniteJump getInstance() {
+        return instance;
+    }
+
+    public static Lobby getLobby() {
+        return lobby;
+    }
+
     private void loadWorld() {
         World voidWorld = GameUtils.createVoidWorld(VOID_WORLD_NAME);
         voidWorld.setPVP(false);
@@ -44,7 +51,7 @@ public class InfiniteJump extends JavaPlugin {
 
         NamespacedKey positionKey = new NamespacedKey(this, "position");
         this.position = voidWorld.getPersistentDataContainer().getOrDefault(positionKey, PersistentDataType.INTEGER, 1);
-        Bukkit.getLogger().info("Loaded position " + this.position);
+        getLogger().info("Loaded position " + this.position);
     }
 
     @Override
@@ -76,13 +83,6 @@ public class InfiniteJump extends JavaPlugin {
         Objects.requireNonNull(getCommand("leave")).setExecutor(new LeaveCommand(jumpPlayerService, lobby));
         Objects.requireNonNull(getCommand("seed")).setExecutor(new SeedCommand(jumpPlayerService));
 
-        /*CommandService commandService = apiInstance.getServiceManager().getCommandService();
-        commandService.registerRuntimeCommand(new ParkourCommand(jumpPlayerService));
-        commandService.registerRuntimeCommand(new JoinCommand(jumpPlayerService));
-        commandService.registerRuntimeCommand(new SpectateCommand(jumpPlayerService));
-        commandService.registerRuntimeCommand(new LeaveCommand(jumpPlayerService, lobby));
-        commandService.registerRuntimeCommand(new SeedCommand(jumpPlayerService));*/
-
         getDataFolder().mkdir();
 
         this.databaseManager = new DatabaseManager();
@@ -99,13 +99,5 @@ public class InfiniteJump extends JavaPlugin {
 
     public DatabaseManager getDatabaseManager() {
         return this.databaseManager;
-    }
-
-    public static InfiniteJump getInstance() {
-        return instance;
-    }
-
-    public static Lobby getLobby() {
-        return lobby;
     }
 }

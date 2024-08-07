@@ -1,18 +1,18 @@
 package fr.d0gma.infinite.parkour;
 
-import java.util.List;
-import java.util.Random;
-
 import fr.d0gma.infinite.zone.Zone;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+import java.util.Random;
+
 public class ParkourGenerator {
 
-    private final Random     random;
-    private final Curve      curve;
-    private final Parkour    parkour;
+    private final Random random;
+    private final Curve curve;
+    private final Parkour parkour;
     private final List<Zone> zones;
 
     private final int totalFrequency;
@@ -74,11 +74,11 @@ public class ParkourGenerator {
     }
 
     private Zone pickNextZone() {
-        int randomRarity = this.random.nextInt(this.totalFrequency);
+        int randomPick = this.random.nextInt(this.totalFrequency);
 
         for (Zone zone : this.zones) {
-            randomRarity -= zone.getFrequency();
-            if (randomRarity <= 0) {
+            randomPick -= zone.getFrequency();
+            if (randomPick <= 0) {
                 return zone;
             }
         }

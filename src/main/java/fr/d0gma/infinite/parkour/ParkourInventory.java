@@ -5,10 +5,6 @@ import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.core.translation.TranslationService;
 import fr.d0gma.infinite.modes.ParkourModeType;
 import fr.d0gma.infinite.players.JumpPlayer;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import org.bukkit.inventory.ItemFlag;
 import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper;
 import xyz.xenondevs.invui.gui.PagedGui;
@@ -17,6 +13,10 @@ import xyz.xenondevs.invui.item.Item;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
 import xyz.xenondevs.invui.window.Window;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class ParkourInventory {
 
@@ -41,9 +41,9 @@ public class ParkourInventory {
         });
     }
 
-    private static long resolveSeed(MapSeed mapSeed){
-        return switch (mapSeed){
-            case MapSeed.RandomSeed randomSeed -> RANDOM.nextLong();
+    private static long resolveSeed(MapSeed mapSeed) {
+        return switch (mapSeed) {
+            case MapSeed.RandomSeed.TRUE_RANDOM -> RANDOM.nextLong();
             case MapSeed.SetSeed(long seed) -> seed;
         };
     }

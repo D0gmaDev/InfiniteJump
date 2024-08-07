@@ -3,7 +3,6 @@ package fr.d0gma.infinite.modes;
 import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.core.timer.Timer;
 import fr.d0gma.core.timer.TimerService;
-import fr.d0gma.core.translation.TranslationService;
 import fr.d0gma.infinite.game.ParkourEndReason;
 import fr.d0gma.infinite.parkour.Parkour;
 import fr.d0gma.infinite.parkour.ParkourSection;
@@ -16,6 +15,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 import java.time.Duration;
+
+import static fr.d0gma.core.translation.TranslationService.translate;
 
 class DeathReaperMode implements ParkourMode {
 
@@ -43,8 +44,8 @@ class DeathReaperMode implements ParkourMode {
     @Override
     public void editSidebar(Sidebar<Component> sidebar) {
         sidebar.addUpdatableLine(() -> this.timer.getStatus() != Timer.Status.ENDED ?
-                TranslationService.translate("parkour.scoreboard.reaper_timer", Placeholder.unparsed("timer", this.timer.getDecreasingFormattedValue())) :
-                TranslationService.translate("parkour.scoreboard.reaper_dead")
+                translate("parkour.scoreboard.reaper_timer", Placeholder.unparsed("timer", this.timer.getDecreasingFormattedValue())) :
+                translate("parkour.scoreboard.reaper_dead")
         );
     }
 

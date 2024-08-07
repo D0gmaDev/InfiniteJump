@@ -66,6 +66,10 @@ public enum Zone {
         this.maxAscent = maxAscent;
     }
 
+    public static List<Zone> getPlayableZones() {
+        return playableZones;
+    }
+
     public int getFrequency() {
         return this.frequency;
     }
@@ -96,10 +100,6 @@ public enum Zone {
 
     public float getComplexity() {
         return this.complexity;
-    }
-
-    public static List<Zone> getPlayableZones() {
-        return playableZones;
     }
 }
 

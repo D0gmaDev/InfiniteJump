@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class SoloBlock implements Structure {
 
-    private final Material  material;
+    private final Material material;
     private final BlockFace blockFace;
 
     public SoloBlock(Material material, BlockFace blockFace) {

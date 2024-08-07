@@ -1,12 +1,12 @@
 package fr.d0gma.infinite.structure;
 
 import fr.d0gma.infinite.parkour.Parkour;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 
 public class SetSoloBlock implements Structure {
 

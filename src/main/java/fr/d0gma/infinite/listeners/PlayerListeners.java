@@ -35,14 +35,16 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onWeather(WeatherChangeEvent event) {
-        if (event.toWeatherState())
+        if (event.toWeatherState()) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onHealthRegen(EntityRegainHealthEvent event) {
-        if (event.getEntity() instanceof Player)
+        if (event.getEntity() instanceof Player) {
             event.setCancelled(true);
+        }
     }
 
 }

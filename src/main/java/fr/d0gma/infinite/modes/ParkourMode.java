@@ -3,12 +3,11 @@ package fr.d0gma.infinite.modes;
 import fr.d0gma.infinite.parkour.ParkourSection;
 import fr.d0gma.infinite.players.JumpPlayer;
 import fr.d0gma.infinite.zone.Zone;
-
-import java.util.List;
-
 import me.catcoder.sidebar.Sidebar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public interface ParkourMode {
 
@@ -38,7 +37,7 @@ public interface ParkourMode {
         return 1f;
     }
 
-    default void editSidebar(Sidebar<Component> sidebar){
+    default void editSidebar(Sidebar<Component> sidebar) {
 
     }
 

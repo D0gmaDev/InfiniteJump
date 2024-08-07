@@ -2,16 +2,17 @@ package fr.d0gma.infinite.parkour;
 
 import java.util.Optional;
 
-public sealed interface MapSeed permits MapSeed.RandomSeed, MapSeed.SetSeed {
+public sealed interface MapSeed permits MapSeed.SetSeed, MapSeed.RandomSeed {
 
-    RandomSeed RANDOM_SEED = new RandomSeed();
+    static MapSeed of(Long seed) {
+        return Optional.ofNullable(seed).<MapSeed>map(SetSeed::new).orElse(RandomSeed.TRUE_RANDOM);
+    }
 
-    record SetSeed(long seed) implements MapSeed {}
+    enum RandomSeed implements MapSeed {
+        TRUE_RANDOM
+    }
 
-    record RandomSeed() implements MapSeed {}
-
-    static MapSeed of(Long seed){
-        return Optional.ofNullable(seed).<MapSeed>map(SetSeed::new).orElse(RANDOM_SEED);
+    record SetSeed(long seed) implements MapSeed {
     }
 
 }
