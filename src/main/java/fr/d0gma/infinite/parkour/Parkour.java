@@ -315,7 +315,7 @@ public class Parkour {
 
             TagResolver tagResolver = TagResolver.resolver(
                     Placeholder.component("mode", translate("parkour.mode." + this.parkourMode.getType().getKey())),
-                    Placeholder.unparsed("seed", String.valueOf(getSeed())),
+                    Placeholder.unparsed("seed", Long.toHexString(getSeed())),
                     Placeholder.unparsed("score", String.valueOf(this.score)),
                     Placeholder.unparsed("duration", TimeUtils.format(duration))
             );

@@ -53,6 +53,9 @@ parkour:
     is_solo: "<red>Impossible de rejoindre la partie de <target>."
     seed: "<click:copy_to_clipboard:'<seed>'><color:#db80ff><u>Clique pour copier la seed de cette carte.</u></color></click>"
     end_message: "<gray>------- FIN DU PARKOUR -------</gray><br><yellow>- Mode: <mode><br>- Score: <white><score></white> - Durée: <white><duration></white><br>- Seed: <white><seed></white></yellow><br><gray>----------------------------</gray>"
+  tab_list:
+    header: " <br><bold><gradient:#572fbd:#3732ba:#6c69d1>INFINITE JUMP</gradient></bold><br><grey> Le jeu procédural compétitif <br> "
+    footer: " <br><grey>Jeu développé avec <red>❤</red> par<br><i>D0gma_</i> pour <i>Rézoléo</i>.<br> "
   item:
     menu: "<#572fbd>Menu"
     history: "<green>Historique"

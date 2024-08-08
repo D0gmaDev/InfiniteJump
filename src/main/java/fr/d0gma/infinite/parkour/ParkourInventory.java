@@ -5,6 +5,8 @@ import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.core.translation.TranslationService;
 import fr.d0gma.infinite.modes.ParkourModeType;
 import fr.d0gma.infinite.players.JumpPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemFlag;
 import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper;
 import xyz.xenondevs.invui.gui.PagedGui;
@@ -29,7 +31,8 @@ public class ParkourInventory {
                 .toList();
 
         PagedGui<Item> gui = PagedGui.items().setStructure(". # # # # # # # .").addIngredient('#', Markers.CONTENT_LIST_SLOT_HORIZONTAL).setContent(items).build();
-        Window.single().setTitle("Menu").setGui(gui).open(player.getPlayer());
+        var title = new AdventureComponentWrapper(Component.text("Menu (seed: ").append(seedString(seed)).append(Component.text(")")));
+        Window.single().setTitle(title).setGui(gui).open(player.getPlayer());
     }
 
     private static Item modeItem(ParkourModeType parkourModeType, JumpPlayer player, MapSeed seed) {
@@ -45,6 +48,13 @@ public class ParkourInventory {
         return switch (mapSeed) {
             case MapSeed.RandomSeed.TRUE_RANDOM -> RANDOM.nextLong();
             case MapSeed.SetSeed(long seed) -> seed;
+        };
+    }
+
+    private static Component seedString(MapSeed mapSeed) {
+        return switch (mapSeed) {
+            case MapSeed.RandomSeed.TRUE_RANDOM -> Component.text("Aléatoire", NamedTextColor.DARK_GRAY);
+            case MapSeed.SetSeed(long seed) -> Component.text(Long.toHexString(seed), NamedTextColor.GRAY);
         };
     }
 }

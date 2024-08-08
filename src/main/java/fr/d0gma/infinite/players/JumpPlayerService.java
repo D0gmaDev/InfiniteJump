@@ -34,7 +34,8 @@ public class JumpPlayerService implements Listener {
         this.players.put(jumpPlayer.getUniqueId(), jumpPlayer);
 
         lobby.teleport(jumpPlayer);
-        event.joinMessage(translate("parkour.message.join", Placeholder.unparsed("name", event.getPlayer().getName())));
+        event.getPlayer().sendPlayerListHeaderAndFooter(translate("parkour.tab_list.header"), translate("parkour.tab_list.footer"));
+        event.joinMessage(translate("parkour.message.join", Placeholder.unparsed("name", jumpPlayer.getPlayerName())));
     }
 
     @EventHandler
@@ -46,7 +47,7 @@ public class JumpPlayerService implements Listener {
         }
 
         jumpPlayer.getParkour().ifPresent(parkour -> parkour.removePlayer(jumpPlayer));
-        event.quitMessage(translate("parkour.message.quit", Placeholder.unparsed("name", event.getPlayer().getName())));
+        event.quitMessage(translate("parkour.message.quit", Placeholder.unparsed("name", jumpPlayer.getPlayerName())));
     }
 
     public JumpPlayer getPlayer(Player player) {

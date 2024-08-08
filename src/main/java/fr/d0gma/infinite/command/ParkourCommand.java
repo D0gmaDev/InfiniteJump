@@ -37,9 +37,17 @@ public class ParkourCommand implements CommandExecutor {
             return true;
         }
 
-        Long seed = args.length != 0 && args[0].matches("-?\\d*") ? Long.parseLong(args[0]) : null;
+        Long seed = args.length != 0 ? safeParseLongFromHex(args[0]) : null;
 
         ParkourInventory.open(player, MapSeed.of(seed));
         return true;
+    }
+
+    private Long safeParseLongFromHex(String arg) {
+        try {
+            return Long.parseUnsignedLong(arg, 16);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

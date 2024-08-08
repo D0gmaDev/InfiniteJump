@@ -90,7 +90,7 @@ public class InfiniteJump extends JavaPlugin {
     }
 
     public World getParkourWorld() {
-        return Bukkit.getWorld(VOID_WORLD_NAME);
+        return getServer().getWorld(VOID_WORLD_NAME);
     }
 
     public int getNextPosition() {

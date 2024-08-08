@@ -84,7 +84,7 @@ public class HistoryInventory {
                 Placeholder.unparsed("id", String.valueOf(parkourRun.id())),
                 Placeholder.unparsed("name", parkourRun.playerName()),
                 Placeholder.component("mode", translate("parkour.mode." + parkourRun.mode().getKey())),
-                Placeholder.unparsed("seed", String.valueOf(parkourRun.seed())),
+                Placeholder.unparsed("seed", Long.toHexString(parkourRun.seed())),
                 Placeholder.unparsed("score", String.valueOf(parkourRun.score())),
                 Placeholder.unparsed("duration", TimeUtils.format(parkourRun.duration())),
                 Placeholder.unparsed("date", TimeUtils.formatDateToCET(parkourRun.instant()))
