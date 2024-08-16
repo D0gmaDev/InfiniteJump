@@ -1,8 +1,8 @@
-package fr.d0gma.infinite.parkour;
+package fr.d0gma.infinite.modes;
 
 
 import fr.d0gma.core.translation.TranslationService;
-import fr.d0gma.infinite.modes.ParkourModeType;
+import fr.d0gma.infinite.parkour.MapSeed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class ParkourInventory {
+public class ModeSelectionInventory {
 
     public static void open(Player player, MapSeed seed, OnModeSelection onModeSelection) {
 

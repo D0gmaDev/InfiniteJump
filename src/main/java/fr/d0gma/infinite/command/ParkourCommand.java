@@ -3,7 +3,7 @@ package fr.d0gma.infinite.command;
 import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.infinite.parkour.MapSeed;
 import fr.d0gma.infinite.parkour.Parkour;
-import fr.d0gma.infinite.parkour.ParkourInventory;
+import fr.d0gma.infinite.modes.ModeSelectionInventory;
 import fr.d0gma.infinite.players.JumpPlayer;
 import fr.d0gma.infinite.players.JumpPlayerService;
 import org.bukkit.command.Command;
@@ -45,7 +45,7 @@ public class ParkourCommand implements CommandExecutor {
 
         var mapSeed = MapSeed.safeParseFromHex(args.length != 0 ? args[0] : null);
 
-        ParkourInventory.open(sender, mapSeed, (mode, click) -> {
+        ModeSelectionInventory.open(sender, mapSeed, (mode, click) -> {
             click.getPlayer().closeInventory();
             Parkour parkour = new Parkour(mode, resolveSeed(mapSeed));
             RunnableHelper.runSynchronously(() -> parkour.startParkour(player));

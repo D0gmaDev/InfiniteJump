@@ -3,7 +3,7 @@ package fr.d0gma.infinite.command;
 import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.infinite.database.TopInventory;
 import fr.d0gma.infinite.parkour.MapSeed;
-import fr.d0gma.infinite.parkour.ParkourInventory;
+import fr.d0gma.infinite.modes.ModeSelectionInventory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +24,7 @@ public class TopCommand implements CommandExecutor {
             return true;
         }
 
-        ParkourInventory.open(sender, mapSeed, (mode, click) -> {
+        ModeSelectionInventory.open(sender, mapSeed, (mode, click) -> {
             click.getPlayer().closeInventory();
             RunnableHelper.runAsynchronously(() -> TopInventory.open(sender, mode, seed));
         });
