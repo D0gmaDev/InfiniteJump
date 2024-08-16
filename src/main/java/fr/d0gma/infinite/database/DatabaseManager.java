@@ -35,7 +35,17 @@ public class DatabaseManager {
         Connection connection = null;
         try {
             connection = connect();
-            String sql = "CREATE TABLE IF NOT EXISTS parkour_runs (id INTEGER PRIMARY KEY AUTOINCREMENT,uuid TEXT NOT NULL,name TEXT NOT NULL,mode TEXT NOT NULL,seed LONG NOT NULL,score DOUBLE NOT NULL,duration LONG NOT NULL,instant TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+            String sql = "CREATE TABLE IF NOT EXISTS parkour_runs ("
+                         + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                         + "uuid TEXT NOT NULL, "
+                         + "name TEXT NOT NULL, "
+                         + "mode TEXT NOT NULL, "
+                         + "ranked BOOLEAN NOT NULL, "
+                         + "seed LONG NOT NULL, "
+                         + "score DOUBLE NOT NULL, "
+                         + "duration LONG NOT NULL, "
+                         + "instant TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                         + ")";
 
             try (Statement statement = connection.createStatement()) {
                 statement.execute(sql);
@@ -51,15 +61,16 @@ public class DatabaseManager {
         Connection connection = null;
         try {
             connection = connect();
-            String sql = "INSERT INTO parkour_runs (uuid, name, mode, seed, score, duration, instant) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO parkour_runs (uuid, name, mode, ranked, seed, score, duration, instant) VALUES (?, ?, ?, ?,? , ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, parkourRun.playerId().toString());
                 statement.setString(2, parkourRun.playerName());
                 statement.setString(3, parkourRun.mode().name());
-                statement.setLong(4, parkourRun.seed());
-                statement.setDouble(5, parkourRun.score());
-                statement.setLong(6, parkourRun.duration().toMillis());
-                statement.setString(7, parkourRun.instant().toString());
+                statement.setBoolean(4, parkourRun.ranked());
+                statement.setLong(5, parkourRun.seed());
+                statement.setDouble(6, parkourRun.score());
+                statement.setLong(7, parkourRun.duration().toMillis());
+                statement.setString(8, parkourRun.instant().toString());
                 statement.executeUpdate();
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -90,23 +101,15 @@ public class DatabaseManager {
         return List.copyOf(runs);
     }
 
-    public List<ParkourRun> getTopScoreRunsFor(ParkourModeType mode, long seed, int maxNumber) {
-        return getRunsFor("SELECT * FROM parkour_runs WHERE mode = ? AND seed = ? ORDER BY score DESC LIMIT ?", mode, seed, maxNumber);
-    }
-
-    public List<ParkourRun> getQuickestRunsFor(ParkourModeType mode, long seed, int maxNumber) {
-        return getRunsFor("SELECT * FROM parkour_runs WHERE mode = ? AND seed = ? ORDER BY duration LIMIT ?", mode, seed, maxNumber);
-    }
-
-    private List<ParkourRun> getRunsFor(String sql, ParkourModeType mode, long seed, int maxNumber) {
+    public List<ParkourRun> getTopRunsFor(ParkourModeType mode, long seed, int maxNumber) {
         List<ParkourRun> runs = new ArrayList<>();
         Connection connection = null;
         try {
             connection = connect();
+            String sql = "SELECT * FROM parkour_runs WHERE mode = ? AND seed = ? AND ranked = TRUE";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, mode.name());
                 statement.setLong(2, seed);
-                statement.setInt(3, maxNumber);
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     runs.add(ParkourRun.buildFrom(resultSet));
@@ -117,6 +120,6 @@ public class DatabaseManager {
         } finally {
             closeConnection(connection);
         }
-        return List.copyOf(runs);
+        return runs.stream().sorted(ParkourRun.comparator(mode)).limit(maxNumber).toList();
     }
 }

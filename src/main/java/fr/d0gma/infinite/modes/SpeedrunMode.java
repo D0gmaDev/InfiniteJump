@@ -8,6 +8,8 @@ import me.catcoder.sidebar.Sidebar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 
+import java.util.Set;
+
 class SpeedrunMode implements ParkourMode {
 
     private final ParkourModeType type;
@@ -31,6 +33,11 @@ class SpeedrunMode implements ParkourMode {
     @Override
     public boolean canGenerateNext() {
         return parkour.getCheckpointsReached() + 1 < parkour.getTarget();
+    }
+
+    @Override
+    public Set<ParkourEndReason> getInvalidRankedEndReasons() {
+        return Set.of(ParkourEndReason.LEAVE, ParkourEndReason.DISCONNECT);
     }
 
     @Override

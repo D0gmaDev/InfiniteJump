@@ -320,8 +320,10 @@ public class Parkour {
                     Placeholder.unparsed("duration", TimeUtils.format(duration))
             );
 
+            boolean ranked = !this.parkourMode.getInvalidRankedEndReasons().contains(reason);
+
             player.sendMessage(translate("parkour.message.end_message", tagResolver));
-            RunnableHelper.runAsynchronously(() -> InfiniteJump.getInstance().getDatabaseManager().insertRun(new ParkourRun(player.getUniqueId(), player.getPlayerName(), this.parkourMode.getType(), getSeed(), this.score, duration, now)));
+            RunnableHelper.runAsynchronously(() -> InfiniteJump.getInstance().getDatabaseManager().insertRun(new ParkourRun(player.getUniqueId(), player.getPlayerName(), this.parkourMode.getType(), ranked, getSeed(), this.score, duration, now)));
         });
 
         this.parkourMode.onEnd();

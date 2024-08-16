@@ -1,5 +1,6 @@
 package fr.d0gma.infinite.modes;
 
+import fr.d0gma.infinite.game.ParkourEndReason;
 import fr.d0gma.infinite.parkour.ParkourSection;
 import fr.d0gma.infinite.players.JumpPlayer;
 import fr.d0gma.infinite.zone.Zone;
@@ -8,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ParkourMode {
 
@@ -35,6 +37,10 @@ public interface ParkourMode {
 
     default float getDifficultyMultiplier() {
         return 1f;
+    }
+
+    default Set<ParkourEndReason> getInvalidRankedEndReasons() {
+        return Set.of();
     }
 
     default void editSidebar(Sidebar<Component> sidebar) {
