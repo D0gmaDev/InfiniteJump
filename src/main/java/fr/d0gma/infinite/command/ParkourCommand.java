@@ -1,6 +1,8 @@
 package fr.d0gma.infinite.command;
 
+import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.infinite.parkour.MapSeed;
+import fr.d0gma.infinite.parkour.Parkour;
 import fr.d0gma.infinite.parkour.ParkourInventory;
 import fr.d0gma.infinite.players.JumpPlayer;
 import fr.d0gma.infinite.players.JumpPlayerService;
@@ -10,9 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 import static fr.d0gma.core.translation.TranslationService.translate;
 
 public class ParkourCommand implements CommandExecutor {
+
+    private static final Random RANDOM = new Random();
 
     private final JumpPlayerService jumpPlayerService;
 
@@ -37,17 +43,20 @@ public class ParkourCommand implements CommandExecutor {
             return true;
         }
 
-        Long seed = args.length != 0 ? safeParseLongFromHex(args[0]) : null;
+        var mapSeed = MapSeed.safeParseFromHex(args.length != 0 ? args[0] : null);
 
-        ParkourInventory.open(player, MapSeed.of(seed));
+        ParkourInventory.open(sender, mapSeed, (mode, click) -> {
+            click.getPlayer().closeInventory();
+            Parkour parkour = new Parkour(mode, resolveSeed(mapSeed));
+            RunnableHelper.runSynchronously(() -> parkour.startParkour(player));
+        });
         return true;
     }
 
-    private Long safeParseLongFromHex(String arg) {
-        try {
-            return Long.parseUnsignedLong(arg, 16);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    private static long resolveSeed(MapSeed mapSeed) {
+        return switch (mapSeed) {
+            case MapSeed.RandomSeed.TRUE_RANDOM -> RANDOM.nextLong();
+            case MapSeed.SetSeed(long seed) -> seed;
+        };
     }
 }

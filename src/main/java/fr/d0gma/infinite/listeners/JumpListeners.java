@@ -2,9 +2,7 @@ package fr.d0gma.infinite.listeners;
 
 import fr.d0gma.infinite.database.HistoryInventory;
 import fr.d0gma.infinite.game.Lobby;
-import fr.d0gma.infinite.parkour.MapSeed;
 import fr.d0gma.infinite.parkour.Parkour;
-import fr.d0gma.infinite.parkour.ParkourInventory;
 import fr.d0gma.infinite.players.JumpPlayer;
 import fr.d0gma.infinite.players.JumpPlayerService;
 import org.bukkit.Material;
@@ -51,7 +49,7 @@ public class JumpListeners implements Listener {
                     case LIGHT_WEIGHTED_PRESSURE_PLATE ->
                             player.getParkour().ifPresent(parkour -> parkour.respawnPlayer(event.getPlayer()));
                     case BARRIER -> player.getParkour().ifPresent(Parkour::skip);
-                    case COMPASS -> ParkourInventory.open(player, MapSeed.RandomSeed.TRUE_RANDOM);
+                    case COMPASS -> player.getPlayer().performCommand("parkour");
                     case KNOWLEDGE_BOOK -> {
                         if (player.getParkour().isEmpty() && !player.getPlayer().hasCooldown(Material.KNOWLEDGE_BOOK)) {
                             player.getPlayer().setCooldown(Material.KNOWLEDGE_BOOK, 20 * 2);

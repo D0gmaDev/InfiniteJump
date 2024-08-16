@@ -6,6 +6,7 @@ import fr.d0gma.core.utils.GameUtils;
 import fr.d0gma.infinite.command.LeaveCommand;
 import fr.d0gma.infinite.command.ParkourCommand;
 import fr.d0gma.infinite.command.SeedCommand;
+import fr.d0gma.infinite.command.TopCommand;
 import fr.d0gma.infinite.database.DatabaseManager;
 import fr.d0gma.infinite.game.Lobby;
 import fr.d0gma.infinite.listeners.JumpListeners;
@@ -82,6 +83,7 @@ public class InfiniteJump extends JavaPlugin {
         Objects.requireNonNull(getCommand("parkour")).setExecutor(new ParkourCommand(jumpPlayerService));
         Objects.requireNonNull(getCommand("leave")).setExecutor(new LeaveCommand(jumpPlayerService, lobby));
         Objects.requireNonNull(getCommand("seed")).setExecutor(new SeedCommand(jumpPlayerService));
+        Objects.requireNonNull(getCommand("top")).setExecutor(new TopCommand());
 
         getDataFolder().mkdir();
 

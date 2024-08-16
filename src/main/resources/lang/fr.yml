@@ -76,3 +76,6 @@ parkour:
     lore_1: "<grey>Durée totale: <white><total_duration></white> (<white><runs_played></white> parties)</grey>"
     lore_2: "<grey>Score total : <white><total_score:'#.0'></white> (max: <white><max_score:'#.0'></white>, moyenne: <white><average_score:'#.0'></white>)</grey>"
     lore_3: "<grey>Mode favori : <favorite_mode> (<white><favorite_mode_count></white> parties)</grey>"
+  top_book:
+    title: "<mode>\n<dark_gray><seed>\n"
+    record: "<hover:show_text:'<gray><date> (<id>)'><gold>#<rank></gold> <dark_gray><name>\n<gray><score> | <duration></hover>\n"

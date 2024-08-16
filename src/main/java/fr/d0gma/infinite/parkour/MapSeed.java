@@ -8,6 +8,14 @@ public sealed interface MapSeed permits MapSeed.SetSeed, MapSeed.RandomSeed {
         return Optional.ofNullable(seed).<MapSeed>map(SetSeed::new).orElse(RandomSeed.TRUE_RANDOM);
     }
 
+    static MapSeed safeParseFromHex(String hex) {
+        try {
+            return new SetSeed(Long.parseUnsignedLong(hex, 16));
+        } catch (NumberFormatException e) {
+            return RandomSeed.TRUE_RANDOM;
+        }
+    }
+
     enum RandomSeed implements MapSeed {
         TRUE_RANDOM
     }
