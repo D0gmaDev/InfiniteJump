@@ -1,5 +1,6 @@
 package fr.d0gma.infinite.listeners;
 
+import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.infinite.database.HistoryInventory;
 import fr.d0gma.infinite.game.Lobby;
 import fr.d0gma.infinite.parkour.Parkour;
@@ -59,7 +60,7 @@ public class JumpListeners implements Listener {
                     case PAPER -> {
                         if (player.getParkour().isEmpty() && !player.getPlayer().hasCooldown(Material.PAPER)) {
                             player.getPlayer().setCooldown(Material.PAPER, 20 * 5);
-                            player.getLastParkour().ifPresent(parkour -> parkour.startCopyFor(player));
+                            player.getLastParkourSeed().map(Parkour::new).ifPresent(parkour -> RunnableHelper.runSynchronously(() -> parkour.startParkour(player)));
                         }
                     }
                 }

@@ -1,17 +1,19 @@
 package fr.d0gma.infinite.command;
 
 import fr.d0gma.core.timer.RunnableHelper;
-import fr.d0gma.infinite.parkour.MapSeed;
-import fr.d0gma.infinite.parkour.Parkour;
 import fr.d0gma.infinite.modes.ModeSelectionInventory;
+import fr.d0gma.infinite.parkour.Parkour;
 import fr.d0gma.infinite.players.JumpPlayer;
 import fr.d0gma.infinite.players.JumpPlayerService;
+import fr.d0gma.infinite.seed.MapSeed;
+import fr.d0gma.infinite.seed.ParkourSeed;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.Random;
 
 import static fr.d0gma.core.translation.TranslationService.translate;
@@ -43,20 +45,21 @@ public class ParkourCommand implements CommandExecutor {
             return true;
         }
 
-        var mapSeed = MapSeed.safeParseFromHex(args.length != 0 ? args[0] : null);
+        Optional.ofNullable(args.length != 0 ? args[0] : null).flatMap(ParkourSeed::decode)
+                .ifPresentOrElse(parkourSeed -> startParkour(parkourSeed, player), () -> fetchMode(player));
 
-        ModeSelectionInventory.open(sender, mapSeed, (mode, click) -> {
-            click.getPlayer().closeInventory();
-            Parkour parkour = new Parkour(mode, resolveSeed(mapSeed));
-            RunnableHelper.runSynchronously(() -> parkour.startParkour(player));
-        });
         return true;
     }
 
-    private static long resolveSeed(MapSeed mapSeed) {
-        return switch (mapSeed) {
-            case MapSeed.RandomSeed.TRUE_RANDOM -> RANDOM.nextLong();
-            case MapSeed.SetSeed(long seed) -> seed;
-        };
+    private static void startParkour(ParkourSeed parkourSeed, JumpPlayer player) {
+        Parkour parkour = new Parkour(parkourSeed);
+        RunnableHelper.runSynchronously(() -> parkour.startParkour(player));
+    }
+
+    private static void fetchMode(JumpPlayer player) {
+        ModeSelectionInventory.open(player.getPlayer(), (mode, click) -> {
+            click.getPlayer().closeInventory();
+            startParkour(new ParkourSeed(new MapSeed(RANDOM.nextInt()), mode), player);
+        });
     }
 }

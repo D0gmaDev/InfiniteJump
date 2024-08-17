@@ -32,7 +32,7 @@ public class SeedCommand implements CommandExecutor {
         }
 
         jumpPlayer.getParkour().ifPresentOrElse(
-                parkour -> jumpPlayer.sendMessage(translate("parkour.message.seed", Placeholder.parsed("seed", Long.toHexString(parkour.getSeed())))),
+                parkour -> jumpPlayer.sendMessage(translate("parkour.message.seed", Placeholder.parsed("seed", parkour.getSeed().encode()))),
                 () -> jumpPlayer.sendMessage(translate("parkour.message.not_in_parkour"))
         );
         return true;

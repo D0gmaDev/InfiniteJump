@@ -2,7 +2,7 @@ package fr.d0gma.infinite.database;
 
 import fr.d0gma.core.utils.TimeUtils;
 import fr.d0gma.infinite.InfiniteJump;
-import fr.d0gma.infinite.modes.ParkourModeType;
+import fr.d0gma.infinite.seed.ParkourSeed;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -17,7 +17,7 @@ import static fr.d0gma.core.translation.TranslationService.translate;
 
 public class TopInventory {
 
-    public static void open(Player player, ParkourModeType mode, long seed) {
+    public static void open(Player player, ParkourSeed seed) {
 
         Component bookTitle = Component.text("Top Book");
         Component bookAuthor = Component.text("InfiniteJump");
@@ -26,9 +26,9 @@ public class TopInventory {
 
         List<Component> lines = new ArrayList<>();
 
-        lines.add(translate("parkour.top_book.title", List.of(Placeholder.component("mode", translate("parkour.mode." + mode.getKey())), Placeholder.unparsed("seed", Long.toHexString(seed)))));
+        lines.add(translate("parkour.top_book.title", List.of(Placeholder.component("mode", translate("parkour.mode." + seed.mode().getKey())), Placeholder.unparsed("seed", seed.encode()))));
 
-        List<ParkourRun> topRuns = InfiniteJump.getInstance().getDatabaseManager().getTopRunsFor(mode, seed, 9);
+        List<ParkourRun> topRuns = InfiniteJump.getInstance().getDatabaseManager().getTopRunsFor(seed, 9);
 
         int i = 0;
         for (ParkourRun topRun : topRuns) {

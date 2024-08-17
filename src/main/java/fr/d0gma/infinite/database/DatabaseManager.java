@@ -1,6 +1,6 @@
 package fr.d0gma.infinite.database;
 
-import fr.d0gma.infinite.modes.ParkourModeType;
+import fr.d0gma.infinite.seed.ParkourSeed;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -67,7 +67,7 @@ public class DatabaseManager {
                 statement.setString(2, parkourRun.playerName());
                 statement.setString(3, parkourRun.mode().name());
                 statement.setBoolean(4, parkourRun.ranked());
-                statement.setLong(5, parkourRun.seed());
+                statement.setLong(5, parkourRun.mapSeed().seed());
                 statement.setDouble(6, parkourRun.score());
                 statement.setLong(7, parkourRun.duration().toMillis());
                 statement.setString(8, parkourRun.instant().toString());
@@ -101,15 +101,15 @@ public class DatabaseManager {
         return List.copyOf(runs);
     }
 
-    public List<ParkourRun> getTopRunsFor(ParkourModeType mode, long seed, int maxNumber) {
+    public List<ParkourRun> getTopRunsFor(ParkourSeed seed, int maxNumber) {
         List<ParkourRun> runs = new ArrayList<>();
         Connection connection = null;
         try {
             connection = connect();
             String sql = "SELECT * FROM parkour_runs WHERE mode = ? AND seed = ? AND ranked = TRUE";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, mode.name());
-                statement.setLong(2, seed);
+                statement.setString(1, seed.mode().name());
+                statement.setLong(2, seed.mapSeed().seed());
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     runs.add(ParkourRun.buildFrom(resultSet));
@@ -120,6 +120,6 @@ public class DatabaseManager {
         } finally {
             closeConnection(connection);
         }
-        return runs.stream().sorted(ParkourRun.comparator(mode)).limit(maxNumber).toList();
+        return runs.stream().sorted(ParkourRun.comparator(seed.mode())).limit(maxNumber).toList();
     }
 }

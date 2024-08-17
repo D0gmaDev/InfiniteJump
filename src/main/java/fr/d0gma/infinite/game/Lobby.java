@@ -61,7 +61,7 @@ public class Lobby {
 
         player.getInventory().setItem(4, ParkourItem.menuItem());
 
-        if (jumpPlayer.getLastParkour().isPresent()) {
+        if (jumpPlayer.getLastParkourSeed().isPresent()) {
             player.getInventory().setItem(5, ParkourItem.replayItem());
         }
 

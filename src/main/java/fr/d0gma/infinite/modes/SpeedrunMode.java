@@ -48,7 +48,7 @@ class SpeedrunMode implements ParkourMode {
 
     @Override
     public void init() {
-        parkour.setTarget(10);
+        parkour.setTarget(20);
     }
 
     @Override

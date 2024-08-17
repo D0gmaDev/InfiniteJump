@@ -1,8 +1,6 @@
 package fr.d0gma.infinite.parkour;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import fr.d0gma.core.team.ScoreboardTeam;
-import fr.d0gma.core.team.ScoreboardTeamService;
 import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.core.timer.Timer;
 import fr.d0gma.core.timer.TimerService;
@@ -12,8 +10,8 @@ import fr.d0gma.infinite.database.ParkourRun;
 import fr.d0gma.infinite.game.ParkourEndReason;
 import fr.d0gma.infinite.game.ParkourItem;
 import fr.d0gma.infinite.modes.ParkourMode;
-import fr.d0gma.infinite.modes.ParkourModeType;
 import fr.d0gma.infinite.players.JumpPlayer;
+import fr.d0gma.infinite.seed.ParkourSeed;
 import me.catcoder.sidebar.ProtocolSidebar;
 import me.catcoder.sidebar.Sidebar;
 import net.kyori.adventure.bossbar.BossBar;
@@ -29,8 +27,6 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team.Option;
-import org.bukkit.scoreboard.Team.OptionStatus;
 import org.bukkit.util.Vector;
 
 import java.time.Duration;
@@ -38,20 +34,18 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import static fr.d0gma.core.translation.TranslationService.translate;
 
 public class Parkour {
 
-    private final ParkourMetadata parkourMetadata;
+    private final ParkourSeed seed;
     private final ParkourMode parkourMode;
 
     private final List<JumpPlayer> players = new ArrayList<>();
 
     private final Timer timer;
-    private final ScoreboardTeam<JumpPlayer> team;
     private final Sidebar<Component> sidebar;
     private final BossBar progressionBar;
 
@@ -65,23 +59,23 @@ public class Parkour {
 
     private double score = 0;
 
-    public Parkour(ParkourModeType parkourModeType, long seed) {
-        this.parkourMetadata = new ParkourMetadata(UUID.randomUUID(), parkourModeType, seed);
+    public Parkour(ParkourSeed seed) {
+        this.seed = seed;
 
-        this.parkourMode = parkourModeType.createMode(this);
+        this.parkourMode = seed.mode().createMode(this);
         this.timer = createParkourTimer();
 
         /* Generation setup */
         int nextPos = InfiniteJump.getInstance().getNextPosition();
         Block spawn = InfiniteJump.getInstance().getParkourWorld().getBlockAt(nextPos * 1000, 100, 0);
 
-        Random random = new Random(seed);
+        Random random = new Random(seed.mapSeed().seed());
 
         this.parkourGenerator = new ParkourGenerator(random, spawn, this, this.parkourMode.getAllowedZones());
         this.parkourRoadmap = new ParkourRoadmap(spawn);
 
-        this.team = ScoreboardTeamService.registerScoreboardTeam(JumpPlayer.class, "PK-" + parkourMetadata.uuid().toString().substring(0, 5), Component.empty());
-        this.team.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);
+        // this.team = ScoreboardTeamService.registerScoreboardTeam(JumpPlayer.class, "PK-" + parkourMetadata.uuid().toString().substring(0, 5), Component.empty());
+        // this.team.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);
 
         this.parkourMode.init();
 
@@ -158,7 +152,7 @@ public class Parkour {
         this.players.add(player);
 
         player.setParkour(this);
-        player.setLastParkour(this);
+        player.setLastParkourSeed(this.seed);
 
         player.setSidebar(this.sidebar);
         player.getPlayer().showBossBar(this.progressionBar);
@@ -168,8 +162,6 @@ public class Parkour {
         }
 
         this.parkourMode.onPlayerAdd(player);
-
-        this.team.addPlayer(player);
 
         spawnInParkour(player.getPlayer());
 
@@ -197,12 +189,7 @@ public class Parkour {
         if (this.players.size() == 1 && this.parkourMode.isSkipAllowed()) {
             this.players.getFirst().getPlayer().getInventory().setItem(8, ParkourItem.skipItem());
         }
-        this.team.removePlayer(player);
         this.parkourMode.onPlayerRemove(player);
-    }
-
-    public long getSeed() {
-        return this.parkourMetadata.seed();
     }
 
     public void checkpoint(Block block) {
@@ -315,7 +302,7 @@ public class Parkour {
 
             TagResolver tagResolver = TagResolver.resolver(
                     Placeholder.component("mode", translate("parkour.mode." + this.parkourMode.getType().getKey())),
-                    Placeholder.unparsed("seed", Long.toHexString(getSeed())),
+                    Placeholder.unparsed("seed", this.seed.encode()),
                     Placeholder.unparsed("score", String.valueOf(this.score)),
                     Placeholder.unparsed("duration", TimeUtils.format(duration))
             );
@@ -323,11 +310,14 @@ public class Parkour {
             boolean ranked = !this.parkourMode.getInvalidRankedEndReasons().contains(reason);
 
             player.sendMessage(translate("parkour.message.end_message", tagResolver));
-            RunnableHelper.runAsynchronously(() -> InfiniteJump.getInstance().getDatabaseManager().insertRun(new ParkourRun(player.getUniqueId(), player.getPlayerName(), this.parkourMode.getType(), ranked, getSeed(), this.score, duration, now)));
+            RunnableHelper.runAsynchronously(() -> InfiniteJump.getInstance().getDatabaseManager().insertRun(new ParkourRun(player.getUniqueId(), player.getPlayerName(), this.seed, ranked, this.score, duration, now)));
         });
 
         this.parkourMode.onEnd();
-        ScoreboardTeamService.deleteScoreboardTeam(this.team);
+    }
+
+    public ParkourSeed getSeed() {
+        return this.seed;
     }
 
     public List<JumpPlayer> getPlayers() {
@@ -336,10 +326,6 @@ public class Parkour {
 
     public int getCheckpointsReached() {
         return this.parkourRoadmap.getCheckpointReached();
-    }
-
-    public UUID getUuid() {
-        return this.parkourMetadata.uuid();
     }
 
     public int getTarget() {
@@ -354,17 +340,10 @@ public class Parkour {
         return this.parkourRoadmap.getCurrentSection();
     }
 
-    public void startCopyFor(JumpPlayer owner) {
-        Parkour copy = new Parkour(this.parkourMetadata.parkourModeType(), this.parkourMetadata.seed());
-        RunnableHelper.runSynchronously(() -> copy.startParkour(owner));
-    }
-
     @Override
     public String toString() {
         return "Parkour{" +
-               "uuid=" + parkourMetadata.uuid() +
-               ", modeType=" + parkourMode.getType().getKey() +
-               ", seed=" + parkourMetadata.seed() +
+               ", seed=" + seed +
                ", target=" + target +
                ", start=" + start +
                ", checkpointReached=" + this.parkourRoadmap.getCheckpointReached() +

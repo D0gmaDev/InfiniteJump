@@ -3,6 +3,7 @@ package fr.d0gma.infinite.players;
 import fr.d0gma.core.player.CorePlayer;
 import fr.d0gma.core.team.ScoreboardTeam;
 import fr.d0gma.infinite.parkour.Parkour;
+import fr.d0gma.infinite.seed.ParkourSeed;
 import me.catcoder.sidebar.Sidebar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
@@ -21,7 +22,7 @@ public class JumpPlayer implements CorePlayer<JumpPlayer> {
 
     private Parkour parkour;
 
-    private Parkour lastParkour;
+    private ParkourSeed lastParkourSeed;
     private boolean spectator = false;
 
     public JumpPlayer(Player player) {
@@ -45,12 +46,12 @@ public class JumpPlayer implements CorePlayer<JumpPlayer> {
         this.parkour = parkour;
     }
 
-    public Optional<Parkour> getLastParkour() {
-        return Optional.ofNullable(this.lastParkour);
+    public Optional<ParkourSeed> getLastParkourSeed() {
+        return Optional.ofNullable(this.lastParkourSeed);
     }
 
-    public void setLastParkour(Parkour lastParkour) {
-        this.lastParkour = lastParkour;
+    public void setLastParkourSeed(ParkourSeed lastParkourSeed) {
+        this.lastParkourSeed = lastParkourSeed;
     }
 
     public boolean isSpectator() {

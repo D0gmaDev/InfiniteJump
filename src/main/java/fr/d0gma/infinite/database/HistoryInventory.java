@@ -83,8 +83,8 @@ public class HistoryInventory {
         var tagResolver = TagResolver.resolver(
                 Placeholder.unparsed("id", String.valueOf(parkourRun.id())),
                 Placeholder.unparsed("name", parkourRun.playerName()),
-                Placeholder.component("mode", translate("parkour.mode." + parkourRun.mode().getKey())),
-                Placeholder.unparsed("seed", Long.toHexString(parkourRun.seed())),
+                Placeholder.component("mode", translate("parkour.mode." + parkourRun.seed().mode().getKey())),
+                Placeholder.unparsed("seed", parkourRun.seed().encode()),
                 Placeholder.unparsed("score", String.valueOf(parkourRun.score())),
                 Placeholder.unparsed("duration", TimeUtils.format(parkourRun.duration())),
                 Placeholder.unparsed("date", TimeUtils.formatDateToCET(parkourRun.instant()))
@@ -96,7 +96,7 @@ public class HistoryInventory {
                 .<ComponentWrapper>map(AdventureComponentWrapper::new)
                 .toList();
 
-        return new SimpleItem(new ItemBuilder(parkourRun.mode().getMaterial()).addItemFlags(ItemFlag.HIDE_ATTRIBUTES).setDisplayName(itemName).setLore(lore));
+        return new SimpleItem(new ItemBuilder(parkourRun.seed().mode().getMaterial()).addItemFlags(ItemFlag.HIDE_ATTRIBUTES).setDisplayName(itemName).setLore(lore));
     }
 
     private static Item statsItem(String playerName, List<ParkourRun> runs) {

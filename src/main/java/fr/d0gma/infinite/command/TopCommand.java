@@ -2,13 +2,14 @@ package fr.d0gma.infinite.command;
 
 import fr.d0gma.core.timer.RunnableHelper;
 import fr.d0gma.infinite.database.TopInventory;
-import fr.d0gma.infinite.parkour.MapSeed;
-import fr.d0gma.infinite.modes.ModeSelectionInventory;
+import fr.d0gma.infinite.seed.ParkourSeed;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class TopCommand implements CommandExecutor {
 
@@ -18,16 +19,8 @@ public class TopCommand implements CommandExecutor {
             return false;
         }
 
-        var mapSeed = MapSeed.safeParseFromHex(args.length != 0 ? args[0] : null);
-
-        if (!(mapSeed instanceof MapSeed.SetSeed(long seed))) {
-            return true;
-        }
-
-        ModeSelectionInventory.open(sender, mapSeed, (mode, click) -> {
-            click.getPlayer().closeInventory();
-            RunnableHelper.runAsynchronously(() -> TopInventory.open(sender, mode, seed));
-        });
+        Optional.ofNullable(args.length != 0 ? args[0] : null).flatMap(ParkourSeed::decode)
+                .ifPresent(parkourSeed -> RunnableHelper.runAsynchronously(() -> TopInventory.open(sender, parkourSeed)));
         return true;
     }
 }
